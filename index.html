@@ -1,149 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dobby's Rock Paper Scissors</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
-      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb, #fbc2eb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .game-card {
-      background-color: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 400px;
     }
-    .choice-btn {
-      transition: all 0.2s ease-in-out;
-      background-color: #fff;
-      border: 2px solid #cbd5e1;
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
     }
-    .choice-btn:hover {
-      transform: scale(1.1) translateY(-5px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-      border-color: #38bdf8;
+    .score {
+      font-size: 24px;
+      margin: 20px 0;
     }
-    .result-win { color: #16a34a; }
-    .result-lose { color: #dc2626; }
-    .result-tie { color: #4b5563; }
-
-    /* Mascot floating */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
     }
-
-    /* Mascot wave */
-    @keyframes wave {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(10deg); }
-      50% { transform: rotate(-10deg); }
-      75% { transform: rotate(10deg); }
+    .buttons button {
+      font-size: 40px;
+      border: none;
+      background: #f4f4f4;
+      border-radius: 50%;
+      padding: 15px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
     }
-
-    .mascot-container {
-      position: fixed;
-      bottom: 5vh;
-      width: 200px;
-      max-width: 20vw;
-      z-index: -1;
-      animation: float 6s ease-in-out infinite;
+    .buttons button:hover {
+      background: #ddd;
+      transform: scale(1.1);
     }
-    .mascot-left { left: 3vw; }
-    .mascot-right { right: 3vw; animation-delay: -3s; }
-
-    .greet { animation: wave 1s ease-in-out infinite; }
-
-    @media (max-width: 1024px) {
-      .mascot-container { display: none; }
+    .result {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+    .reset-btn {
+      background: #d946ef;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .reset-btn:hover {
+      background: #a21caf;
+    }
+    footer {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+    }
+    footer img {
+      width: 40px;
+      margin-right: 10px;
     }
   </style>
 </head>
-<body class="text-gray-800 min-h-screen flex items-center justify-center p-4">
+<body>
+  <div class="container">
+    <h1>Dobby's Rock Paper Scissors</h1>
+    <p>Challenge the computer & make Dobby proud!</p>
 
-  <!-- Left Mascot -->
-  <div class="mascot-container mascot-left">
-    <img id="mascot-left" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB38AAAOXCAYAAAAkeYviAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP+lSURBVHhe7P1N1y3Plt2FRZ5bt4RAkmUEGGMYDBAedNww7nhY4stWyR9FEi2wPd..." alt="Dobby Mascot" />
-  </div>
-
-  <!-- Right Mascot -->
-  <div class="mascot-container mascot-right">
-    <img id="mascot-right" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB38AAAOXCAYAAAAkeYviAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP+lSURBVHhe7P1N1y3Plt2FRZ5bt4RAkmUEGGMYDBAedNww7nhY4stWyR9FEi2wPd..." alt="Dobby Mascot" class="transform -scale-x-100"/>
-  </div>
-
-  <!-- Main Game -->
-  <main class="w-full max-w-lg mx-auto text-center relative z-10">
-    <div class="game-card rounded-2xl p-6 md:p-10">
-      <h1 class="text-4xl md:text-5xl font-black text-gray-700 mb-2">Dobby's Rock Paper Scissors</h1>
-      <p class="text-gray-500 mb-8">Challenge the computer & make Dobby proud!</p>
-
-      <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-bold">
-        <div class="text-center">
-          <p class="text-gray-600 text-lg">You</p>
-          <p id="player-score" class="text-5xl text-sky-500">0</p>
-        </div>
-        <div class="text-5xl text-gray-400">-</div>
-        <div class="text-center">
-          <p class="text-gray-600 text-lg">CPU</p>
-          <p id="computer-score" class="text-5xl text-rose-500">0</p>
-        </div>
-      </div>
-
-      <div class="h-16 mb-8 flex flex-col justify-center items-center">
-        <p id="result-message" class="text-2xl font-bold h-8"></p>
-        <p id="choices-message" class="text-gray-500 text-lg h-6"></p>
-      </div>
-
-      <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-10">
-        <button data-choice="rock" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✊</span></button>
-        <button data-choice="paper" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✋</span></button>
-        <button data-choice="scissors" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✌️</span></button>
-      </div>
-
-      <button id="reset-btn" class="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-        Reset Game
-      </button>
+    <div class="score">
+      <span id="player-score">0</span> - <span id="cpu-score">0</span>
     </div>
-  </main>
+
+    <div class="result" id="result">Make your move!</div>
+
+    <div class="buttons">
+      <button onclick="play('rock')">✊</button>
+      <button onclick="play('paper')">🖐️</button>
+      <button onclick="play('scissors')">✌️</button>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+  </div>
+
+  <footer>
+    <img src="data:image/png;base64,REPLACE_THIS_WITH_FULL_BASE64_STRING" alt="Dobby Mascot" />
+    <span>Dobby Mascot</span>
+  </footer>
 
   <script>
-    const playerScoreEl = document.getElementById('player-score');
-    const computerScoreEl = document.getElementById('computer-score');
-    const resultMessageEl = document.getElementById('result-message');
-    const choicesMessageEl = document.getElementById('choices-message');
-    const choiceButtons = document.querySelectorAll('.choice-btn');
-    const resetButton = document.getElementById('reset-btn');
-    const mascots = [document.getElementById('mascot-left'), document.getElementById('mascot-right')];
+    let playerScore = 0;
+    let cpuScore = 0;
 
-    let playerScore = 0, computerScore = 0;
-    const choices = ['rock','paper','scissors'];
-    const emojiMap = { rock: '✊', paper: '✋', scissors: '✌️' };
+    function play(playerChoice) {
+      const choices = ["rock", "paper", "scissors"];
+      const cpuChoice = choices[Math.floor(Math.random() * 3)];
 
-    choiceButtons.forEach(btn => btn.addEventListener('click', () => playRound(btn.dataset.choice)));
-    resetButton.addEventListener('click', resetGame);
-
-    function playRound(playerChoice) {
-      const computerChoice = getComputerChoice();
-      const winner = determineWinner(playerChoice, computerChoice);
-      updateScore(winner);
-      displayResult(winner, playerChoice, computerChoice);
-
-      if (winner === 'player') {
-        mascots.forEach(m => m.classList.add('greet'));
-        setTimeout(() => mascots.forEach(m => m.classList.remove('greet')), 1200);
+      let result = "";
+      if (playerChoice === cpuChoice) {
+        result = "It's a Tie!";
+      } else if (
+        (playerChoice === "rock" && cpuChoice === "scissors") ||
+        (playerChoice === "paper" && cpuChoice === "rock") ||
+        (playerChoice === "scissors" && cpuChoice === "paper")
+      ) {
+        result = "You Win!";
+        playerScore++;
+      } else {
+        result = "You Lose!";
+        cpuScore++;
       }
+
+      document.getElementById("result").innerText =
+        result + ` (You: ${playerChoice} vs CPU: ${cpuChoice})`;
+      document.getElementById("player-score").innerText = playerScore;
+      document.getElementById("cpu-score").innerText = cpuScore;
     }
-    function getComputerChoice(){ return choices[Math.floor(Math.random()*3)]; }
-    function determineWinner(p,c){ if(p===c) return 'tie'; if((p==='rock'&&c==='scissors')||(p==='paper'&&c==='rock')||(p==='scissors'&&c==='paper')) return 'player'; return 'computer'; }
-    function updateScore(winner){ if(winner==='player'){ playerScore++; playerScoreEl.textContent=playerScore;} else if(winner==='computer'){ computerScore++; computerScoreEl.textContent=computerScore;} }
-    function displayResult(winner,p,c){ resultMessageEl.className='text-2xl font-bold h-8'; let msg,cls; switch(winner){case 'player':msg='You Win!';cls='result-win';break;case 'computer':msg='You Lose!';cls='result-lose';break;default:msg="It's a Tie!";cls='result-tie';} resultMessageEl.textContent=msg; resultMessageEl.classList.add(cls); choicesMessageEl.textContent=`You: ${emojiMap[p]} vs CPU: ${emojiMap[c]}`; }
-    function resetGame(){ playerScore=0; computerScore=0; playerScoreEl.textContent='0'; computerScoreEl.textContent='0'; resultMessageEl.textContent=''; choicesMessageEl.textContent=''; }
+
+    function resetGame() {
+      playerScore = 0;
+      cpuScore = 0;
+      document.getElementById("player-score").innerText = playerScore;
+      document.getElementById("cpu-score").innerText = cpuScore;
+      document.getElementById("result").innerText = "Make your move!";
+    }
   </script>
 </body>
 </html>
