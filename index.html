@@ -89,12 +89,12 @@
       <!-- Scoreboard -->
       <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-bold">
         <div class="text-center">
-          <p class="text-gray-600 text-lg">You</p>
+          <p class="text-gray-600 text-lg">YOU</p>
           <p id="player-score" class="text-5xl text-sky-500">0</p>
         </div>
         <div class="text-5xl text-gray-400">-</div>
         <div class="text-center">
-          <p class="text-gray-600 text-lg">CPU</p>
+          <p class="text-gray-600 text-lg">BOT</p>
           <p id="computer-score" class="text-5xl text-rose-500">0</p>
         </div>
       </div>
@@ -166,7 +166,7 @@
       else { msg = "It's a Tie!"; cls = 'result-tie'; }
       resultMessageEl.textContent = msg;
       resultMessageEl.classList.add(cls);
-      choicesMessageEl.textContent = `You: ${emojiMap[playerChoice]} vs BOT: ${emojiMap[computerChoice]}`;
+      choicesMessageEl.textContent = `You: ${emojiMap[playerChoice]} vs Bot: ${emojiMap[computerChoice]}`;
       mascots.forEach(m => m.addEventListener('animationend', () => m.classList.remove('wave')));
     }
     function resetGame() {
@@ -180,4 +180,5 @@
   </script>
 </body>
 </html>
+
 
