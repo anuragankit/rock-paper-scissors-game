@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #f0f0f0);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .game-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .choice-btn {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .choice-btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-win { color: #4ade80; } /* green-400 */
+        .result-lose { color: #f87171; } /* red-400 */
+        .result-tie { color: #9ca3af; } /* gray-400 */
+    </style>
+</head>
+<body class="text-white min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Game Container -->
+    <main class="w-full max-w-2xl mx-auto text-center">
+        <div class="game-card rounded-2xl shadow-2xl p-6 md:p-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">Rock Paper Scissors</h1>
+            <p class="text-gray-400 mb-8">Choose your weapon to challenge the computer.</p>
+
+            <!-- Scoreboard -->
+            <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-semibold">
+                <div class="text-center">
+                    <p class="text-gray-300 text-lg">Player</p>
+                    <p id="player-score" class="text-5xl">0</p>
+                </div>
+                <div class="text-5xl text-gray-500">-</div>
+                <div class="text-center">
+                    <p class="text-gray-300 text-lg">Computer</p>
+                    <p id="computer-score" class="text-5xl">0</p>
+                </div>
+            </div>
+
+            <!-- Result Display -->
+            <div class="h-16 mb-8 flex flex-col justify-center items-center">
+                <p id="result-message" class="text-2xl font-bold h-8"></p>
+                <p id="choices-message" class="text-gray-400 text-lg h-6"></p>
+            </div>
+
+
+            <!-- Player Choices -->
+            <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-10">
+                <button data-choice="rock" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
+                    <span class="text-5xl md:text-6xl">✊</span>
+                </button>
+                <button data-choice="paper" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
+                    <span class="text-5xl md:text-6xl">✋</span>
+                </button>
+                <button data-choice="scissors" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
+                    <span class="text-5xl md:text-6xl">✌️</span>
+                </button>
+            </div>
+
+            <!-- Reset Button -->
+            <button id="reset-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                Reset Game
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const playerScoreEl = document.getElementById('player-score');
+        const computerScoreEl = document.getElementById('computer-score');
+        const resultMessageEl = document.getElementById('result-message');
+        const choicesMessageEl = document.getElementById('choices-message');
+        const choiceButtons = document.querySelectorAll('.choice-btn');
+        const resetButton = document.getElementById('reset-btn');
+
+        // Game state
+        let playerScore = 0;
+        let computerScore = 0;
+        const choices = ['rock', 'paper', 'scissors'];
+        const emojiMap = {
+            rock: '✊',
+            paper: '✋',
+            scissors: '✌️'
+        };
+
+        // Event Listeners
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const playerChoice = button.dataset.choice;
+                playRound(playerChoice);
+            });
+        });
+
+        resetButton.addEventListener('click', resetGame);
+
+        // Game Logic
+        function getComputerChoice() {
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        function playRound(playerChoice) {
+            const computerChoice = getComputerChoice();
+            const winner = determineWinner(playerChoice, computerChoice);
+
+            updateScore(winner);
+            displayResult(winner, playerChoice, computerChoice);
+        }
+
+        function determineWinner(player, computer) {
+            if (player === computer) {
+                return 'tie';
+            }
+            if (
+                (player === 'rock' && computer === 'scissors') ||
+                (player === 'paper' && computer === 'rock') ||
+                (player === 'scissors' && computer === 'paper')
+            ) {
+                return 'player';
+            }
+            return 'computer';
+        }
+
+        function updateScore(winner) {
+            if (winner === 'player') {
+                playerScore++;
+                playerScoreEl.textContent = playerScore;
+            } else if (winner === 'computer') {
+                computerScore++;
+                computerScoreEl.textContent = computerScore;
+            }
+        }
+
+        function displayResult(winner, playerChoice, computerChoice) {
+            resultMessageEl.classList.remove('result-win', 'result-lose', 'result-tie');
+            
+            let message = '';
+            let messageClass = '';
+
+            if (winner === 'player') {
+                message = 'You Win!';
+                messageClass = 'result-win';
+            } else if (winner === 'computer') {
+                message = 'You Lose!';
+                messageClass = 'result-lose';
+            } else {
+                message = "It's a Tie!";
+                messageClass = 'result-tie';
+            }
+
+            resultMessageEl.textContent = message;
+            resultMessageEl.classList.add(messageClass);
+
+            choicesMessageEl.textContent = `You chose ${emojiMap[playerChoice]}, computer chose ${emojiMap[computerChoice]}.`;
+        }
+
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            playerScoreEl.textContent = '0';
+            computerScoreEl.textContent = '0';
+            resultMessageEl.textContent = '';
+            choicesMessageEl.textContent = '';
+            resultMessageEl.classList.remove('result-win', 'result-lose', 'result-tie');
+        }
+    </script>
+
+</body>
+</html>
