@@ -1,195 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a, #f0f0f0);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dobby's Rock Paper Scissors</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
+      overflow-x: hidden;
+    }
+    .game-card {
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    .choice-btn {
+      transition: all 0.2s ease-in-out;
+      background-color: #fff;
+      border: 2px solid #cbd5e1;
+    }
+    .choice-btn:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      border-color: #38bdf8;
+    }
+    .result-win { color: #16a34a; }
+    .result-lose { color: #dc2626; }
+    .result-tie { color: #4b5563; }
 
-        .game-card {
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+    /* Mascot floating */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
 
-        .choice-btn {
-            transition: all 0.2s ease-in-out;
-        }
+    /* Mascot wave */
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      50% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
 
-        .choice-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .choice-btn:active {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
+    .mascot-container {
+      position: fixed;
+      bottom: 5vh;
+      width: 200px;
+      max-width: 20vw;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
+    }
+    .mascot-left { left: 3vw; }
+    .mascot-right { right: 3vw; animation-delay: -3s; }
 
-        .result-win { color: #4ade80; } /* green-400 */
-        .result-lose { color: #f87171; } /* red-400 */
-        .result-tie { color: #9ca3af; } /* gray-400 */
-    </style>
+    .greet { animation: wave 1s ease-in-out infinite; }
+
+    @media (max-width: 1024px) {
+      .mascot-container { display: none; }
+    }
+  </style>
 </head>
-<body class="text-white min-h-screen flex items-center justify-center p-4">
+<body class="text-gray-800 min-h-screen flex items-center justify-center p-4">
 
-    <!-- Main Game Container -->
-    <main class="w-full max-w-2xl mx-auto text-center">
-        <div class="game-card rounded-2xl shadow-2xl p-6 md:p-10">
-            <h1 class="text-4xl md:text-5xl font-bold mb-2">Rock Paper Scissors</h1>
-            <p class="text-gray-400 mb-8">Choose your weapon to challenge the computer.</p>
+  <!-- Left Mascot -->
+  <div class="mascot-container mascot-left">
+    <img id="mascot-left" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB38AAAOXCAYAAAAkeYviAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP+lSURBVHhe7P1N1y3Plt2FRZ5bt4RAkmUEGGMYDBAedNww7nhY4stWyR9FEi2wPd..." alt="Dobby Mascot" />
+  </div>
 
-            <!-- Scoreboard -->
-            <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-semibold">
-                <div class="text-center">
-                    <p class="text-gray-300 text-lg">Player</p>
-                    <p id="player-score" class="text-5xl">0</p>
-                </div>
-                <div class="text-5xl text-gray-500">-</div>
-                <div class="text-center">
-                    <p class="text-gray-300 text-lg">Computer</p>
-                    <p id="computer-score" class="text-5xl">0</p>
-                </div>
-            </div>
+  <!-- Right Mascot -->
+  <div class="mascot-container mascot-right">
+    <img id="mascot-right" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB38AAAOXCAYAAAAkeYviAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP+lSURBVHhe7P1N1y3Plt2FRZ5bt4RAkmUEGGMYDBAedNww7nhY4stWyR9FEi2wPd..." alt="Dobby Mascot" class="transform -scale-x-100"/>
+  </div>
 
-            <!-- Result Display -->
-            <div class="h-16 mb-8 flex flex-col justify-center items-center">
-                <p id="result-message" class="text-2xl font-bold h-8"></p>
-                <p id="choices-message" class="text-gray-400 text-lg h-6"></p>
-            </div>
+  <!-- Main Game -->
+  <main class="w-full max-w-lg mx-auto text-center relative z-10">
+    <div class="game-card rounded-2xl p-6 md:p-10">
+      <h1 class="text-4xl md:text-5xl font-black text-gray-700 mb-2">Dobby's Rock Paper Scissors</h1>
+      <p class="text-gray-500 mb-8">Challenge the computer & make Dobby proud!</p>
 
-
-            <!-- Player Choices -->
-            <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-10">
-                <button data-choice="rock" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
-                    <span class="text-5xl md:text-6xl">✊</span>
-                </button>
-                <button data-choice="paper" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
-                    <span class="text-5xl md:text-6xl">✋</span>
-                </button>
-                <button data-choice="scissors" class="choice-btn bg-gray-700/50 hover:bg-gray-600/50 p-4 md:p-6 rounded-full">
-                    <span class="text-5xl md:text-6xl">✌️</span>
-                </button>
-            </div>
-
-            <!-- Reset Button -->
-            <button id="reset-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
-                Reset Game
-            </button>
+      <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-bold">
+        <div class="text-center">
+          <p class="text-gray-600 text-lg">You</p>
+          <p id="player-score" class="text-5xl text-sky-500">0</p>
         </div>
-    </main>
+        <div class="text-5xl text-gray-400">-</div>
+        <div class="text-center">
+          <p class="text-gray-600 text-lg">CPU</p>
+          <p id="computer-score" class="text-5xl text-rose-500">0</p>
+        </div>
+      </div>
 
-    <script>
-        // DOM Elements
-        const playerScoreEl = document.getElementById('player-score');
-        const computerScoreEl = document.getElementById('computer-score');
-        const resultMessageEl = document.getElementById('result-message');
-        const choicesMessageEl = document.getElementById('choices-message');
-        const choiceButtons = document.querySelectorAll('.choice-btn');
-        const resetButton = document.getElementById('reset-btn');
+      <div class="h-16 mb-8 flex flex-col justify-center items-center">
+        <p id="result-message" class="text-2xl font-bold h-8"></p>
+        <p id="choices-message" class="text-gray-500 text-lg h-6"></p>
+      </div>
 
-        // Game state
-        let playerScore = 0;
-        let computerScore = 0;
-        const choices = ['rock', 'paper', 'scissors'];
-        const emojiMap = {
-            rock: '✊',
-            paper: '✋',
-            scissors: '✌️'
-        };
+      <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-10">
+        <button data-choice="rock" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✊</span></button>
+        <button data-choice="paper" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✋</span></button>
+        <button data-choice="scissors" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl md:text-6xl">✌️</span></button>
+      </div>
 
-        // Event Listeners
-        choiceButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const playerChoice = button.dataset.choice;
-                playRound(playerChoice);
-            });
-        });
+      <button id="reset-btn" class="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+        Reset Game
+      </button>
+    </div>
+  </main>
 
-        resetButton.addEventListener('click', resetGame);
+  <script>
+    const playerScoreEl = document.getElementById('player-score');
+    const computerScoreEl = document.getElementById('computer-score');
+    const resultMessageEl = document.getElementById('result-message');
+    const choicesMessageEl = document.getElementById('choices-message');
+    const choiceButtons = document.querySelectorAll('.choice-btn');
+    const resetButton = document.getElementById('reset-btn');
+    const mascots = [document.getElementById('mascot-left'), document.getElementById('mascot-right')];
 
-        // Game Logic
-        function getComputerChoice() {
-            const randomIndex = Math.floor(Math.random() * choices.length);
-            return choices[randomIndex];
-        }
+    let playerScore = 0, computerScore = 0;
+    const choices = ['rock','paper','scissors'];
+    const emojiMap = { rock: '✊', paper: '✋', scissors: '✌️' };
 
-        function playRound(playerChoice) {
-            const computerChoice = getComputerChoice();
-            const winner = determineWinner(playerChoice, computerChoice);
+    choiceButtons.forEach(btn => btn.addEventListener('click', () => playRound(btn.dataset.choice)));
+    resetButton.addEventListener('click', resetGame);
 
-            updateScore(winner);
-            displayResult(winner, playerChoice, computerChoice);
-        }
+    function playRound(playerChoice) {
+      const computerChoice = getComputerChoice();
+      const winner = determineWinner(playerChoice, computerChoice);
+      updateScore(winner);
+      displayResult(winner, playerChoice, computerChoice);
 
-        function determineWinner(player, computer) {
-            if (player === computer) {
-                return 'tie';
-            }
-            if (
-                (player === 'rock' && computer === 'scissors') ||
-                (player === 'paper' && computer === 'rock') ||
-                (player === 'scissors' && computer === 'paper')
-            ) {
-                return 'player';
-            }
-            return 'computer';
-        }
-
-        function updateScore(winner) {
-            if (winner === 'player') {
-                playerScore++;
-                playerScoreEl.textContent = playerScore;
-            } else if (winner === 'computer') {
-                computerScore++;
-                computerScoreEl.textContent = computerScore;
-            }
-        }
-
-        function displayResult(winner, playerChoice, computerChoice) {
-            resultMessageEl.classList.remove('result-win', 'result-lose', 'result-tie');
-            
-            let message = '';
-            let messageClass = '';
-
-            if (winner === 'player') {
-                message = 'You Win!';
-                messageClass = 'result-win';
-            } else if (winner === 'computer') {
-                message = 'You Lose!';
-                messageClass = 'result-lose';
-            } else {
-                message = "It's a Tie!";
-                messageClass = 'result-tie';
-            }
-
-            resultMessageEl.textContent = message;
-            resultMessageEl.classList.add(messageClass);
-
-            choicesMessageEl.textContent = `You chose ${emojiMap[playerChoice]}, computer chose ${emojiMap[computerChoice]}.`;
-        }
-
-        function resetGame() {
-            playerScore = 0;
-            computerScore = 0;
-            playerScoreEl.textContent = '0';
-            computerScoreEl.textContent = '0';
-            resultMessageEl.textContent = '';
-            choicesMessageEl.textContent = '';
-            resultMessageEl.classList.remove('result-win', 'result-lose', 'result-tie');
-        }
-    </script>
-
+      if (winner === 'player') {
+        mascots.forEach(m => m.classList.add('greet'));
+        setTimeout(() => mascots.forEach(m => m.classList.remove('greet')), 1200);
+      }
+    }
+    function getComputerChoice(){ return choices[Math.floor(Math.random()*3)]; }
+    function determineWinner(p,c){ if(p===c) return 'tie'; if((p==='rock'&&c==='scissors')||(p==='paper'&&c==='rock')||(p==='scissors'&&c==='paper')) return 'player'; return 'computer'; }
+    function updateScore(winner){ if(winner==='player'){ playerScore++; playerScoreEl.textContent=playerScore;} else if(winner==='computer'){ computerScore++; computerScoreEl.textContent=computerScore;} }
+    function displayResult(winner,p,c){ resultMessageEl.className='text-2xl font-bold h-8'; let msg,cls; switch(winner){case 'player':msg='You Win!';cls='result-win';break;case 'computer':msg='You Lose!';cls='result-lose';break;default:msg="It's a Tie!";cls='result-tie';} resultMessageEl.textContent=msg; resultMessageEl.classList.add(cls); choicesMessageEl.textContent=`You: ${emojiMap[p]} vs CPU: ${emojiMap[c]}`; }
+    function resetGame(){ playerScore=0; computerScore=0; playerScoreEl.textContent='0'; computerScoreEl.textContent='0'; resultMessageEl.textContent=''; choicesMessageEl.textContent=''; }
+  </script>
 </body>
 </html>
