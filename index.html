@@ -166,7 +166,7 @@
       else { msg = "It's a Tie!"; cls = 'result-tie'; }
       resultMessageEl.textContent = msg;
       resultMessageEl.classList.add(cls);
-      choicesMessageEl.textContent = `You: ${emojiMap[playerChoice]} vs Bot: ${emojiMap[computerChoice]}`;
+      choicesMessageEl.textContent = `You: ${emojiMap[playerChoice]} vs Dobby: ${emojiMap[computerChoice]}`;
       mascots.forEach(m => m.addEventListener('animationend', () => m.classList.remove('wave')));
     }
     function resetGame() {
@@ -180,6 +180,7 @@
   </script>
 </body>
 </html>
+
 
 
 
