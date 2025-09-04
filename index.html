@@ -37,7 +37,6 @@
     .result-lose { color: #dc2626; }
     .result-tie { color: #4b5563; }
 
-    /* Mascot animations */
     @keyframes float {
       0% { transform: translateY(0px); }
       50% { transform: translateY(-20px); }
@@ -70,23 +69,19 @@
 </head>
 <body class="text-gray-800 min-h-screen flex items-center justify-center p-4">
 
-  <!-- Mascot Left -->
   <div class="mascot-container mascot-left">
     <img id="mascot-left" src="mascot.png" alt="Dobby">
   </div>
 
-  <!-- Mascot Right -->
   <div class="mascot-container mascot-right">
     <img id="mascot-right" src="mascot.png" alt="Dobby">
   </div>
 
-  <!-- Main Game -->
   <main class="w-full max-w-lg mx-auto text-center relative z-10">
     <div class="game-card rounded-2xl p-6 md:p-10">
       <h1 class="text-4xl md:text-5xl font-black text-gray-700 mb-2">Dobby's Rock Paper Scissors</h1>
       <p class="text-gray-500 mb-8">Challenge the computer & make Dobby proud!</p>
 
-      <!-- Scoreboard -->
       <div class="flex justify-center items-center space-x-8 md:space-x-16 mb-8 text-2xl font-bold">
         <div class="text-center">
           <p class="text-gray-600 text-lg">YOU</p>
@@ -99,20 +94,17 @@
         </div>
       </div>
 
-      <!-- Result -->
       <div class="h-16 mb-8 flex flex-col justify-center items-center">
         <p id="result-message" class="text-2xl font-bold h-8"></p>
         <p id="choices-message" class="text-gray-500 text-lg h-6"></p>
       </div>
 
-      <!-- Choices -->
       <div class="flex justify-center items-center space-x-4 md:space-x-6 mb-10">
         <button data-choice="rock" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl">✊</span></button>
         <button data-choice="paper" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl">✋</span></button>
         <button data-choice="scissors" class="choice-btn p-4 md:p-6 rounded-full shadow-md"><span class="text-5xl">✌️</span></button>
       </div>
 
-      <!-- Reset -->
       <button id="reset-btn" class="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
         Reset Game
       </button>
@@ -180,6 +172,7 @@
   </script>
 </body>
 </html>
+
 
 
 
